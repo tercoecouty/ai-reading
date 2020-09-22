@@ -1,0 +1,42 @@
+@import "../global.less";
+
+@sideWidth: 64px;
+@pageHeadHeight: 36px;
+
+.reader {
+    height: 100vh;
+    display: flex;
+}
+
+.left {
+    width: @sideWidth;
+    border-right: solid 1px;
+}
+
+.right {
+    width: @sideWidth;
+    border-left: solid 1px;
+}
+
+.middle {
+    width: calc(100% - @sideWidth * 2);
+    display: flex;
+}
+
+.page {
+    width: 50%;
+}
+
+.pageHead {
+    height: @pageHeadHeight;
+    border-bottom: solid 1px;
+}
+
+.pageFoot {
+    height: @pageHeadHeight;
+    border-top: solid 1px;
+}
+
+.pageContent {
+    height: calc(100% - @pageHeadHeight * 2);
+}

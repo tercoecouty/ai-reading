@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "outDir": "build/dist",
+        "module": "esNext",
+        "target": "esNext",
+        "lib": ["esNext", "dom"],
+        "baseUrl": ".",
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "experimentalDecorators": true
+    },
+    "exclude": ["node_modules"]
+}
