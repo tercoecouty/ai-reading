@@ -2,13 +2,13 @@ const path = require("path");
 const fs = require("fs-extra");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 
 function getPath(suffix) {
     return path.resolve(__dirname, suffix);
 }
 
 fs.emptyDirSync("dist");
-// fs.copySync("public", "dist/assets");
 
 module.exports = {
     mode: "development",
@@ -30,17 +30,32 @@ module.exports = {
                         loader: "css-loader",
                         options: {
                             modules: {
-                                localIdentName: "[local]-[hash:6]",
+                                localIdentName: "[local]_[hash:6]",
                             },
                         },
                     },
                     "less-loader",
                 ],
             },
-            { test: /\.tsx?$/, use: "babel-loader" },
+            {
+                test: /\.tsx$/,
+                loader: "esbuild-loader",
+                options: { target: "esnext", loader: "tsx" },
+            },
+            {
+                test: /\.ts$/,
+                loader: "esbuild-loader",
+                options: { target: "esnext", loader: "ts" },
+            },
+            {
+                test: /\.txt$/,
+                loader: "esbuild-loader",
+                options: { loader: "text" },
+            },
         ],
     },
     plugins: [
+        new ESBuildPlugin(),
         new MiniCssExtractPlugin({ filename: "[name].[hash:6].css" }),
         new HtmlWebpackPlugin({
             template: getPath("src/pages/reader/index.html"),
@@ -52,12 +67,16 @@ module.exports = {
         react: "React",
         "react-dom": "ReactDOM",
     },
-    // devtool: "inline-source-map",
+    optimization: {
+        minimize: true,
+        minimizer: [new ESBuildMinifyPlugin()],
+    },
     devServer: {
         contentBase: getPath("dist"),
         hot: true,
     },
-    optimization: {
-        usedExports: true,
+    resolve: {
+        extensions: [".js", ".ts", ".tsx"],
     },
+    // devtool: "inline-source-map",
 };

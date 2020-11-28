@@ -1,26 +1,21 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import styles from "./index.less";
+import * as React from "react";
+import { render } from "react-dom";
+
+import LeftSide from "./LeftSide";
+import RightSide from "./RightSide";
+import BookPage from "./BookPage";
 
 const ReaderGUI = () => {
     return (
-        <div className={styles.reader}>
-            <div className={styles.left}>left</div>
-            <div className={styles.middle}>
-                <div className={styles.page}>
-                    <div className={styles.pageHead}>pageHead</div>
-                    <div className={styles.pageContent}>pageContent</div>
-                    <div className={styles.pageFoot}>pageFoot</div>
-                </div>
-                <div className={styles.page}>
-                    <div className={styles.pageHead}>pageHead</div>
-                    <div className={styles.pageContent}>pageContent</div>
-                    <div className={styles.pageFoot}>pageFoot</div>
-                </div>
+        <div>
+            <LeftSide />
+            <div>
+                <BookPage />
+                <BookPage />
             </div>
-            <div className={styles.right}>right</div>
+            <RightSide />
         </div>
     );
 };
 
-ReactDOM.render(<ReaderGUI />, document.getElementById("root"));
+render(<ReaderGUI />, document.getElementById("root"));
