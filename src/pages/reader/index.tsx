@@ -1,5 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
+import "./index.less";
 
 import LeftSide from "./LeftSide";
 import RightSide from "./RightSide";
@@ -7,9 +8,9 @@ import BookPage from "./BookPage";
 
 const ReaderGUI = () => {
     return (
-        <div>
+        <div className="reader">
             <LeftSide />
-            <div>
+            <div className="page-container">
                 <BookPage />
                 <BookPage />
             </div>

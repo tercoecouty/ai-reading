@@ -4,18 +4,39 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 
-function getPath(suffix) {
-    return path.resolve(__dirname, suffix);
-}
+const getPath = (suffix) => path.resolve(__dirname, suffix);
+
+const isDevelopment = process.env.NODE_ENV !== "production";
+
+const pages = [];
+const entry = {};
+const plugins = [];
+plugins.push(new ESBuildPlugin());
+if (!isDevelopment) plugins.push(new MiniCssExtractPlugin());
+// pages.push(["reader", "阅读器"]);
+pages.push(["login", "登录"]);
+// pages.push(["userInfo", "用户信息"]);
+// pages.push(["homework", "作业管理"]);
+// pages.push(["bookshelf", "书架"]);
 
 fs.emptyDirSync("dist");
 
+pages.forEach((item) => {
+    const [pageName, pageTitle] = item;
+    entry[pageName] = getPath(`src/pages/${pageName}/index.tsx`);
+    plugins.push(
+        new HtmlWebpackPlugin({
+            template: getPath(`src/pages/template.html`),
+            chunks: [pageName],
+            filename: `${pageName}.html`,
+            title: pageTitle,
+        })
+    );
+});
+
 module.exports = {
-    mode: "development",
-    // mode: "production",
-    entry: {
-        reader: getPath("src/pages/reader/index.tsx"),
-    },
+    mode: isDevelopment ? "development" : "production",
+    entry: entry,
     output: {
         filename: "[name].[hash:6].js",
         path: getPath("dist"),
@@ -24,22 +45,11 @@ module.exports = {
         rules: [
             {
                 test: /\.less$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    {
-                        loader: "css-loader",
-                        options: {
-                            modules: {
-                                localIdentName: "[local]_[hash:6]",
-                            },
-                        },
-                    },
-                    "less-loader",
-                ],
+                use: "my-less-loader",
             },
             {
                 test: /\.tsx$/,
-                loader: "esbuild-loader",
+                loader: ["esbuild-loader"],
                 options: { target: "esnext", loader: "tsx" },
             },
             {
@@ -54,15 +64,7 @@ module.exports = {
             },
         ],
     },
-    plugins: [
-        new ESBuildPlugin(),
-        new MiniCssExtractPlugin({ filename: "[name].[hash:6].css" }),
-        new HtmlWebpackPlugin({
-            template: getPath("src/pages/reader/index.html"),
-            chunks: ["reader"],
-            filename: "reader.html",
-        }),
-    ],
+    plugins: plugins,
     externals: {
         react: "React",
         "react-dom": "ReactDOM",
@@ -72,11 +74,15 @@ module.exports = {
         minimizer: [new ESBuildMinifyPlugin()],
     },
     devServer: {
-        contentBase: getPath("dist"),
+        contentBase: "dist",
         hot: true,
     },
     resolve: {
         extensions: [".js", ".ts", ".tsx"],
     },
-    // devtool: "inline-source-map",
+    resolveLoader: {
+        modules: ["loader", "node_modules"],
+        extensions: [".js", ".json"],
+        mainFields: ["loader", "main"],
+    },
 };

@@ -1,0 +1,58 @@
+@import "../global.less";
+@import (reference) "../mixin.less";
+
+@sideWidth: 64px;
+@pageHeaderHeight: 36px;
+
+.reader {
+    display: grid;
+    grid-template-columns: @sideWidth auto @sideWidth;
+    height: 100vh;
+    min-width: 768px;
+    overflow: hidden;
+    background-color: #efebe0;
+}
+
+.side {
+    .center();
+
+    &:nth-of-type(1) {
+        .border(right);
+    }
+
+    &:nth-of-type(3) {
+        .border(left);
+    }
+}
+
+.page-container {
+    display: flex;
+    justify-content: center;
+}
+
+.page {
+    width: 50%;
+    display: grid;
+    grid-template-rows: 36px auto 36px;
+
+    > div {
+        .center();
+    }
+
+    > div:nth-child(1) {
+        .border(bottom);
+    }
+
+    > div:nth-child(3) {
+        .border(top);
+    }
+
+    &:nth-of-type(2) {
+        .border(left);
+    }
+}
+
+.page-header,
+.page-footer {
+    user-select: none;
+}
