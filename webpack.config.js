@@ -1,44 +1,29 @@
 const path = require("path");
 const fs = require("fs-extra");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
+const CustomPlugin = require("./utils/custom-loader.js").CustomPlugin;
 
 const getPath = (suffix) => path.resolve(__dirname, suffix);
-
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const pages = [];
 const entry = {};
-const plugins = [];
-plugins.push(new ESBuildPlugin());
-if (!isDevelopment) plugins.push(new MiniCssExtractPlugin());
-
-// pages.push(["reader", "阅读器"]);
-pages.push(["login", "登录"]);
-// pages.push(["userInfo", "用户信息"]);
-// pages.push(["homework", "作业管理"]);
-// pages.push(["bookshelf", "书架"]);
+const pages = [
+    // ["login", "登录"],
+    ["reader", "阅读器"],
+    // ["userInfo", "用户信息"],
+    // ["homework", "作业管理"],
+    // ["bookshelf", "书架"]
+];
 
 fs.emptyDirSync("dist");
 
 pages.forEach((item) => {
-    const [pageName, pageTitle] = item;
+    const pageName = item[0];
     entry[pageName] = getPath(`src/pages/${pageName}/index.tsx`);
-    plugins.push(
-        new HtmlWebpackPlugin({
-            template: getPath(`src/pages/template.html`),
-            chunks: [pageName],
-            filename: `${pageName}.html`,
-            title: pageTitle,
-        })
-    );
 });
 
 module.exports = {
     mode: isDevelopment ? "development" : "production",
     entry: entry,
-    plugins: plugins,
     output: {
         filename: "[name].[hash:6].js",
         path: getPath("dist"),
@@ -47,10 +32,16 @@ module.exports = {
         rules: [
             {
                 test: /\.(tsx|ts|less|txt)$/,
-                use: "my-loader",
+                use: path.resolve("utils/custom-loader.js"),
             },
         ],
     },
+    plugins: [
+        new CustomPlugin({
+            template: getPath(`src/pages/template.html`),
+            pages,
+        }),
+    ],
     externals: {
         react: "React",
         "react-dom": "ReactDOM",
@@ -61,12 +52,5 @@ module.exports = {
     },
     resolve: {
         extensions: [".js", ".ts", ".tsx"],
-    },
-    resolveLoader: {
-        modules: ["loader"],
-    },
-    optimization: {
-        minimize: true,
-        minimizer: [new ESBuildMinifyPlugin()],
     },
 };
