@@ -13,6 +13,7 @@ const entry = {};
 const plugins = [];
 plugins.push(new ESBuildPlugin());
 if (!isDevelopment) plugins.push(new MiniCssExtractPlugin());
+
 // pages.push(["reader", "阅读器"]);
 pages.push(["login", "登录"]);
 // pages.push(["userInfo", "用户信息"]);
@@ -37,6 +38,7 @@ pages.forEach((item) => {
 module.exports = {
     mode: isDevelopment ? "development" : "production",
     entry: entry,
+    plugins: plugins,
     output: {
         filename: "[name].[hash:6].js",
         path: getPath("dist"),
@@ -44,34 +46,14 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.less$/,
-                use: "my-less-loader",
-            },
-            {
-                test: /\.tsx$/,
-                loader: ["esbuild-loader"],
-                options: { target: "esnext", loader: "tsx" },
-            },
-            {
-                test: /\.ts$/,
-                loader: "esbuild-loader",
-                options: { target: "esnext", loader: "ts" },
-            },
-            {
-                test: /\.txt$/,
-                loader: "esbuild-loader",
-                options: { loader: "text" },
+                test: /\.(tsx|ts|less|txt)$/,
+                use: "my-loader",
             },
         ],
     },
-    plugins: plugins,
     externals: {
         react: "React",
         "react-dom": "ReactDOM",
-    },
-    optimization: {
-        minimize: true,
-        minimizer: [new ESBuildMinifyPlugin()],
     },
     devServer: {
         contentBase: "dist",
@@ -81,8 +63,10 @@ module.exports = {
         extensions: [".js", ".ts", ".tsx"],
     },
     resolveLoader: {
-        modules: ["loader", "node_modules"],
-        extensions: [".js", ".json"],
-        mainFields: ["loader", "main"],
+        modules: ["loader"],
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new ESBuildMinifyPlugin()],
     },
 };
