@@ -1,7 +1,7 @@
 const esbuild = require("esbuild");
 const less = require("less");
 const path = require("path");
-const fs = require("fs");
+const fs = require("./fs");
 
 const pluginName = "custom-plugin";
 const isProd = process.env.NODE_ENV === "production";
@@ -14,10 +14,11 @@ class CustomPlugin {
     }
 
     apply(compiler) {
-        compiler.hooks.emit.tapAsync(pluginName, this.handle);
+        compiler.hooks.emit.tapAsync(pluginName, this.handleEmit);
+        compiler.hooks.done.tapAsync(pluginName, this.handleDone);
     }
 
-    handle = (compilation, callback) => {
+    handleEmit = (compilation, callback) => {
         // 提取 CSS 文件
         if (isProd) {
             compilation.chunks.forEach((chunk) => {
@@ -39,7 +40,7 @@ class CustomPlugin {
         }
 
         // 生成 HTML 文件
-        const html = fs.readFileSync(this.template).toString();
+        const html = fs.readFile(this.template);
         this.pages.forEach((item) => {
             const [pageName, pageTitle] = item;
             const chunk = compilation.chunks.find((chunk) => chunk.id === pageName);
@@ -48,6 +49,14 @@ class CustomPlugin {
             let strScript = "";
             let strLink = "";
             let strTitle = `<title>${pageTitle}</title>`;
+
+            if (isProd) {
+                strScript += `<script src="react.production.min.js"></script>`;
+                strScript += `<script src="react-dom.production.min.js"></script>`;
+            } else {
+                strScript += `<script src="react.development.js"></script>`;
+                strScript += `<script src="react-dom.development.js"></script>`;
+            }
 
             chunk.files.forEach((filename) => {
                 if (filename.endsWith(".js")) {
@@ -75,6 +84,20 @@ class CustomPlugin {
 
         callback();
     };
+
+    handleDone = (compilation, callback) => {
+        if (isProd) {
+            fs.link("lib/react.production.min.js", "dist/react.production.min.js");
+            fs.link("lib/react-dom.production.min.js", "dist/react-dom.production.min.js");
+        } else {
+            fs.link("lib/react.development.js", "dist/react.development.js");
+            fs.link("lib/react-dom.development.js", "dist/react-dom.development.js");
+        }
+
+        fs.link("public/logo-96px.png", "dist/logo-96px.png");
+
+        callback();
+    };
 }
 
 async function customLoader(source) {
@@ -94,10 +117,8 @@ async function customLoader(source) {
     return;
 }
 
-customLoader.CustomPlugin = CustomPlugin;
-
 async function esbuildLoader(source, loader) {
-    const result = esbuild.transformSync(source, { loader });
+    const result = await esbuild.transform(source, { loader });
     return result.code;
 }
 
@@ -105,11 +126,13 @@ async function lessLoader(source, filename) {
     const result = await less.render(source, { filename });
 
     if (isProd) {
+        // 如果是 prod mode，把编译的 CSS 文件保存起来，由 CustomPlugin 生成文件。
         const dir = path.parse(filename).dir;
         cssContent[dir] = result.css;
         return "";
     }
 
+    // 如果不是 prod mode，那么通过 style 标签加载样式
     const css = result.css.replace(/\n+/g, "").replace(/ *([{:;]) +/g, "$1");
 
     const js = `
@@ -129,4 +152,5 @@ async function lessLoader(source, filename) {
     return js;
 }
 
+customLoader.CustomPlugin = CustomPlugin;
 module.exports = customLoader;

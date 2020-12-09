@@ -1,5 +1,5 @@
 const path = require("path");
-const fs = require("fs-extra");
+const fs = require("./utils/fs");
 const CustomPlugin = require("./utils/custom-loader.js").CustomPlugin;
 
 const getPath = (suffix) => path.resolve(__dirname, suffix);
@@ -14,7 +14,7 @@ const pages = [
     // ["bookshelf", "书架"]
 ];
 
-fs.emptyDirSync("dist");
+fs.emptyDir("dist");
 
 pages.forEach((item) => {
     const pageName = item[0];
@@ -32,13 +32,13 @@ module.exports = {
         rules: [
             {
                 test: /\.(tsx|ts|less|txt)$/,
-                use: path.resolve("utils/custom-loader.js"),
+                use: getPath("utils/custom-loader.js"),
             },
         ],
     },
     plugins: [
         new CustomPlugin({
-            template: getPath(`src/pages/template.html`),
+            template: getPath("src/pages/template.html"),
             pages,
         }),
     ],
@@ -52,5 +52,11 @@ module.exports = {
     },
     resolve: {
         extensions: [".js", ".ts", ".tsx"],
+        alias: {
+            "@root": getPath("."),
+            "@src": getPath("src"),
+            "@utils": getPath("utils"),
+            "@api": getPath("src/api"),
+        },
     },
 };
