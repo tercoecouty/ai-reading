@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import text from "./1.txt";
-import Parser from "./parser";
 
 // 使用width指定宽度会在选择的时候留下空缺，应该使用letter-spacing，也可以是负值
 export default function BookPage() {
@@ -22,18 +21,9 @@ export default function BookPage() {
         setLoading(false);
     }, []);
 
-    // useEffect(() => {
-    //     const dom_span = document.getElementById("char-measure");
-    //     const dom_page = document.getElementById("page-content");
-    //     const text = "你好，abc。\nGood to see you.";
-    //     console.time("parser");
-    //     const parser = new Parser();
-    //     parser.preprocess(text);
-    //     parser.measure(dom_span, dom_page);
-    //     parser.encodeItems();
-    //     console.timeEnd("parser");
-    //     console.log(parser);
-    // }, []);
+    useEffect(() => {
+        // todo
+    }, []);
 
     const handleClick = (e) => {
         // const str = window.getSelection().toString();
