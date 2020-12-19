@@ -31,7 +31,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(tsx|ts|less|txt)$/,
+                test: /\.(tsx|ts|less|svg|txt)$/,
                 use: getPath("utils/custom-loader.js"),
             },
         ],
@@ -53,10 +53,10 @@ module.exports = {
     resolve: {
         extensions: [".js", ".ts", ".tsx"],
         alias: {
-            "@root": getPath("."),
             "@src": getPath("src"),
-            "@utils": getPath("utils"),
+            "@svg": getPath("src/svg"),
             "@api": getPath("src/api"),
+            "@utils": getPath("src/utils"),
         },
     },
 };

@@ -22,7 +22,15 @@ class CustomPlugin {
         // 提取 CSS 文件
         if (isProd) {
             compilation.chunks.forEach((chunk) => {
-                const dir = path.parse(chunk.entryModule.resource).dir;
+                let resource = "";
+                if (chunk.entryModule.rootModule) {
+                    resource = chunk.entryModule.rootModule.resource;
+                } else {
+                    resource = chunk.entryModule.resource;
+                }
+                if (!resource) return;
+
+                const dir = path.parse(resource).dir;
                 let css = cssContent[dir];
                 if (!css) return;
 
@@ -43,7 +51,7 @@ class CustomPlugin {
         const html = fs.readFile(this.template);
         this.pages.forEach((item) => {
             const [pageName, pageTitle] = item;
-            const chunk = compilation.chunks.find((chunk) => chunk.id === pageName);
+            const chunk = compilation.chunks.find((chunk) => chunk.name === pageName);
             if (!chunk) return;
 
             let strScript = "";
@@ -71,7 +79,7 @@ class CustomPlugin {
             strHTML = strHTML.replace("<!-- %script% -->", strScript);
             strHTML = strHTML.replace("<!-- %title% -->", strTitle);
 
-            const assetName = chunk.id + ".html";
+            const assetName = chunk.name + ".html";
             compilation.assets[assetName] = {
                 source() {
                     return strHTML;
@@ -110,11 +118,37 @@ async function customLoader(source) {
             return await lessLoader(source, this.resourcePath);
         case "tsx":
         case "ts":
-        case "txt":
             return await esbuildLoader(source, fileExtension);
+        case "svg":
+            return await svgLoader(source);
+        case "txt":
+            return await txtLoader(source);
     }
 
     return;
+}
+
+async function txtLoader(source) {
+    const js = `
+        const text = \`${source}\`;
+        export default text;
+    `;
+
+    return js;
+}
+
+async function svgLoader(source) {
+    const tsx = `
+        import * as React from "react";
+        export default function Svg(){
+            return (
+                ${source}
+            );
+        }
+    `;
+
+    const js = await esbuildLoader(tsx, "tsx");
+    return js;
 }
 
 async function esbuildLoader(source, loader) {

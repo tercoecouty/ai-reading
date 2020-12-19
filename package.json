@@ -8,15 +8,14 @@
         "url": "https://github.com/tercoecouty/ai-reading"
     },
     "scripts": {
-        "start": "webpack-dev-server",
+        "server": "webpack-dev-server",
         "build": "webpack",
-        "build-prod": "cross-env NODE_ENV=production webpack"
+        "build-prod": "scripts/build-prod.cmd"
     },
     "dependencies": {
         "@types/node": "^14.10.2",
         "@types/react": "^16.9.49",
         "@types/react-dom": "^17.0.0",
-        "cross-env": "^7.0.3",
         "esbuild": "^0.8.16",
         "less": "^3.12.2",
         "webpack": "^4.44.2",
