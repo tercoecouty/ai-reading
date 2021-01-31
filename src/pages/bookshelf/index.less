@@ -1,2 +1,23 @@
 @import "../global.less";
 @import (reference) "../mixin.less";
+
+.bookList {
+    padding: 48px 20%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 48px;
+}
+
+.bookItem {
+    > img {
+        width: 100%;
+        border: 1px solid;
+        cursor: pointer;
+    }
+
+    > div {
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+    }
+}

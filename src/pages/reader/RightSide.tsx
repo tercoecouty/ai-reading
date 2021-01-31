@@ -1,9 +1,11 @@
 import * as React from "react";
 import SideItem from "./SideItem";
 
+import styles from "./index.less";
+
 export default function RightSide() {
     return (
-        <div className="side">
+        <div className={styles.side}>
             <div>
                 <SideItem title="全屏" icon="full-screen" />
                 <SideItem title="上一页" icon="arrow-left" />

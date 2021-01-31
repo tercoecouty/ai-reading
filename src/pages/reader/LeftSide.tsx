@@ -1,9 +1,11 @@
 import * as React from "react";
 import SideItem from "./SideItem";
 
+import styles from "./index.less";
+
 export default function LeftSide() {
     return (
-        <div className="side">
+        <div className={styles.side}>
             <div>
                 <SideItem title="我的批注" icon="my-note" />
                 <SideItem title="搜索" icon="search" />

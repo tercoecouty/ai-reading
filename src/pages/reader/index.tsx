@@ -1,7 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
-import { detectMobile } from "@utils/index";
-import "./index.less";
+import styles from "./index.less";
 
 import LeftSide from "./LeftSide";
 import RightSide from "./RightSide";
@@ -13,9 +12,9 @@ const ReaderGUI = () => {
     }
 
     return (
-        <div className="reader">
+        <div className={styles.reader}>
             <LeftSide />
-            <div className="page-container">
+            <div className={styles.pageContainer}>
                 <BookPage />
                 {/* <BookPage /> */}
             </div>
@@ -23,5 +22,10 @@ const ReaderGUI = () => {
         </div>
     );
 };
+
+function detectMobile() {
+    const agent = window.navigator.userAgent;
+    return /(Android|iPhone|iPad)/i.test(agent);
+}
 
 render(<ReaderGUI />, document.getElementById("root"));

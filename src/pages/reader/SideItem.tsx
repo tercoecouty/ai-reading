@@ -1,17 +1,16 @@
 import * as React from "react";
-import { classnames } from "@utils/index";
 
-import MyNoteSvg from "@svg/my-note.svg";
-import SearchSvg from "@svg/search.svg";
-import TeamSvg from "@svg/team.svg";
-import SettingsSvg from "@svg/settings.svg";
-import ExitSvg from "@svg/exit.svg";
-import FullScreenSvg from "@svg/full-screen.svg";
-import ArrowLeftSvg from "@svg/arrow-left.svg";
-import ArrowRightSvg from "@svg/arrow-right.svg";
-import UnderlineSvg from "@svg/underline.svg";
-import EditSvg from "@svg/edit.svg";
-import HelpSvg from "@svg/help.svg";
+import MyNoteSvg from "./assets/my-note.svg";
+import SearchSvg from "./assets/search.svg";
+import TeamSvg from "./assets/team.svg";
+import SettingsSvg from "./assets/settings.svg";
+import ExitSvg from "./assets/exit.svg";
+import FullScreenSvg from "./assets/full-screen.svg";
+import ArrowLeftSvg from "./assets/arrow-left.svg";
+import ArrowRightSvg from "./assets/arrow-right.svg";
+import UnderlineSvg from "./assets/underline.svg";
+import EditSvg from "./assets/edit.svg";
+import HelpSvg from "./assets/help.svg";
 
 const iconMap: Map<string, any> = new Map();
 iconMap.set("search", <SearchSvg />);
@@ -26,6 +25,8 @@ iconMap.set("full-screen", <FullScreenSvg />);
 iconMap.set("arrow-left", <ArrowLeftSvg />);
 iconMap.set("arrow-right", <ArrowRightSvg />);
 
+import styles from "./index.less";
+
 interface Props {
     title: string;
     icon: string;
@@ -36,13 +37,8 @@ interface Props {
 export default function SideItem(props: Props) {
     const { icon, disabled } = props;
 
-    const className = classnames({
-        "side-item": true,
-        "side-item-disabled": disabled,
-    });
-
     return (
-        <div className={className}>
+        <div className={styles.sideItem}>
             <span>{iconMap.get(icon)}</span>
         </div>
     );

@@ -1,20 +1,19 @@
 const path = require("path");
-const fs = require("./utils/fs");
-const CustomPlugin = require("./utils/custom-loader.js").CustomPlugin;
+const utils = require("./scripts/utils");
+const CustomPlugin = require("./scripts/loader.js").CustomPlugin;
 
-const getPath = (suffix) => path.resolve(__dirname, suffix);
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 const entry = {};
 const pages = [
     // ["login", "登录"],
+    // ["bookshelf", "书架"],
     ["reader", "阅读器"],
-    // ["userInfo", "用户信息"],
-    // ["homework", "作业管理"],
-    // ["bookshelf", "书架"]
+    // ["userInfo", "个人信息"],
+    // ["homework", "作业"],
 ];
 
-fs.emptyDir("dist");
+utils.emptyDir("dist");
 
 pages.forEach((item) => {
     const pageName = item[0];
@@ -31,17 +30,12 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(tsx|ts|less|svg|txt)$/,
-                use: getPath("utils/custom-loader.js"),
+                test: /\.(tsx|ts|less|svg|txt|png|jpg)$/,
+                use: getPath("scripts/loader.js"),
             },
         ],
     },
-    plugins: [
-        new CustomPlugin({
-            template: getPath("src/pages/template.html"),
-            pages,
-        }),
-    ],
+    plugins: [new CustomPlugin(pages)],
     externals: {
         react: "React",
         "react-dom": "ReactDOM",
@@ -53,10 +47,14 @@ module.exports = {
     resolve: {
         extensions: [".js", ".ts", ".tsx"],
         alias: {
-            "@src": getPath("src"),
             "@svg": getPath("src/svg"),
-            "@api": getPath("src/api"),
             "@utils": getPath("src/utils"),
+            "@api": getPath("src/api"),
+            "@component": getPath("src/component"),
         },
     },
 };
+
+function getPath(suffix) {
+    return path.resolve(__dirname, suffix);
+}

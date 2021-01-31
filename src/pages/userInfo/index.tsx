@@ -1,9 +1,14 @@
-import * as React from "react";
+import React from "react";
 import { render } from "react-dom";
-import "./index.less";
+import styles from "./index.less";
+import Header from "@component/Header/index";
 
-const ReaderGUI = () => {
-    return <div>UserInfo</div>;
-};
+function UserInfo() {
+    return (
+        <React.Fragment>
+            <Header showBookshelf showHomework />
+        </React.Fragment>
+    );
+}
 
-render(<ReaderGUI />, document.getElementById("root"));
+render(<UserInfo />, document.getElementById("root"));

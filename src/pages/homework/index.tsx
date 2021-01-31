@@ -1,9 +1,19 @@
-import * as React from "react";
+import React from "react";
 import { render } from "react-dom";
-import "./index.less";
+import styles from "./index.less";
+import Header from "@component/Header/index";
 
-const ReaderGUI = () => {
-    return <div>Homework</div>;
-};
+function Homework() {
+    return (
+        <React.Fragment>
+            <Header showBookshelf />
+            <div className={styles.homeworkList}>
+                <div>homework</div>
+                <div>homework</div>
+                <div>homework</div>
+            </div>
+        </React.Fragment>
+    );
+}
 
-render(<ReaderGUI />, document.getElementById("root"));
+render(<Homework />, document.getElementById("root"));

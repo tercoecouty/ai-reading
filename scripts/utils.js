@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 function emptyDir(dirPath) {
     ensureDir(dirPath);
@@ -14,6 +15,8 @@ function ensureDir(dirPath) {
 
 function link(src, dest) {
     if (exist(dest)) return;
+
+    ensureDir(path.dirname(dest));
     fs.linkSync(src, dest);
 }
 
@@ -32,10 +35,26 @@ function readFile(filePath) {
     return fs.readFileSync(filePath).toString();
 }
 
+function copyFile(src, dest) {
+    if (!exist(src)) return;
+
+    ensureDir(path.dirname(dest));
+    fs.copyFileSync(src, dest);
+}
+
+function hash(text) {
+    const hash = crypto.createHash("md5");
+    hash.update(text);
+
+    return hash.digest("hex");
+}
+
 module.exports = {
     ensureDir,
     emptyDir,
     link,
     exist,
     readFile,
+    hash,
+    copyFile,
 };

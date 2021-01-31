@@ -3,11 +3,12 @@
         "jsx": "react",
         "baseUrl": ".",
         "paths": {
-            "@src/*": ["src/*"],
+            "@demo/*": ["src/demo/*"],
             "@svg/*": ["src/svg/*"],
-            "@utils/*": ["src/utils/*"]
+            "@api/*": ["src/api/*"],
+            "@component/*": ["src/component/*"]
         },
-        "target": "ESNext"
-    },
-    "include": ["./src/**/*"]
+        "target": "ESNext",
+        "allowSyntheticDefaultImports": true
+    }
 }
